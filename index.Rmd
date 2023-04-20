@@ -161,6 +161,20 @@ m2 <- m %>% ggplot(aes(x=date3,y=Precipitacion))+
 ggplotly(p=m2)
 ```
 
+### Gráfico de cajas
+
+```{r}
+m$dateu <- as.Date(m$date3,format = "%Y-%m-%d")
+m$datex <- format(m$dateu,format="%m")
+m <- m[,c(4,2)]
+names(m) <- c("Mes","Precipitacion")
+
+a1 <- m %>% ggplot(aes(x=Mes,y=Precipitacion))+
+  geom_boxplot(alpha=0.8,color="black",fill="whitesmoke")+labs(x = "Meses",color="Meses",fill="Meses")+
+  geom_jitter(size=3,alpha=0.5,color="turquoise") + theme(legend.position = "none")
+ggplotly(a1)
+```
+
 Column {data-width=200}
 -----------------------------------------------------------------------
 ### Precipitación acumulada total
@@ -192,3 +206,4 @@ calendarPlot(df1, pollutant = "pp",
              statistic = "sum",
              cols = "Blues",)
 ```
+
