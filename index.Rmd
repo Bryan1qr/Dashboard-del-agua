@@ -207,3 +207,28 @@ calendarPlot(df1, pollutant = "pp",
              cols = "Blues",)
 ```
 
+# En desarrollo {data-icon="fa-chart-bar"}
+
+row {data-width=300}
+-----------------------------------------------------------------------
+### Presentación MRSE
+```{r}
+embed_xaringan(url = "https://rstudio-pubs-static.s3.amazonaws.com/1038198_cc1b96ffb74446c5a9171b32fa92d943.html#/title-slide",ratio="2:4")
+```
+
+row {data-width=300}
+-----------------------------------------------------------------------
+### Gráfico de serie de tiempo
+```{r}
+dfn <- df
+names(dfn) <- c("date","pp")
+view(dfn)
+library(openair)
+
+timeVariation(dfn, pollutant = "pp", 
+              statistic = "mean",
+              col = "firebrick",
+              main="Comportamiento de lluvias en Estación Asana")
+
+```
+
