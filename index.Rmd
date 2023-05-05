@@ -1,5 +1,5 @@
 ---
-title: "Estación pluviométrica de Asana"
+title: "Mecanismos de Retribución por Servicios Ecosistémicos Hídricos"
 author: "Equipo MRSE"
 date: "`r Sys.Date()`"
 output: 
@@ -29,26 +29,25 @@ library(openair)
 library(openxlsx)
 library(ggpubr)
 library(xaringanthemer)
+library(thematic)
 
 theme_set(theme_bw())
 ```
 
-# Sidebar {.sidebar style="color:cream"}
-## Datos de Monitoreo Hidrológico en la Microcuenca de Asana
-Como parte de la ejecución del Plan de Mecanismos de Retribución por Servicios Ecosistémicos Hídricos de la EPS Ilo S.A. se cuenta con un Sistema de Monitoreo Hidrológico. Parte de este sistema se muestra en esta página. Aquí puedes visualizar y descargar los datos que se vienen recolectando constantemente.
-
->Bienvenido a esta plataforma de acceso público
-
-> Equipo MRSE
-
-
-
 # Datos estadísticos {data-icon="fa-chart-bar"}
-Column {data-width=300}
------------------------------------------------------------------------
 
-### TABLA DE DATOS
-La siguiente tabla se obtuvo luego de desacargar datos de precipitación de la Estación meteorológica Asana. El formato de la fecha de cada dato de precipitación se muestra en Año-Mes-Día Hora:Minuto. Además la tabla se puede descargar en varios formatos (revisar los botones de la tabla 1).
+## Column {style="color:cream" data-width="300"}
+
+> ***MRSE Hídricos de la EPS Ilo S.A.***
+>
+>EPS Ilo S.A. realiza implementación del Plan de Intervención los MRSE en la Comunidad Campesina de Asana con la finalidad de conservación y recuperación de los Servicios Ecosistemos Hídricos.
+>
+>
+> ***Bienvenido a esta plataforma de acceso público***
+
+> --- ***Equipo MRSE***
+
+## Column {.tabset data-width="550"}
 
 ```{r}
 df <- read.csv("abril.csv")[,-1]
@@ -67,7 +66,7 @@ g0 <- df %>% ggplot(aes(x=factor(Precipitacion)))+
 
 
 
-datatable(df, extensions = 'Buttons',
+datos <- datatable(df, extensions = 'Buttons',
           options = list(pageLength=1000,
                              autowidth = TRUE,
                          dom = 'Bfrtip',buttons = 
@@ -79,7 +78,61 @@ datatable(df, extensions = 'Buttons',
 
 ```
 
-### Representación Espacial de la Microcuenca Asana
+### ***Slide1***
+
+![](images/p1.png)
+
+### ***Slide 2***
+
+![](images/p2.png)
+
+### ***Slide 3***
+
+![](images/p3.png)
+
+### ***Slide 4***
+
+![](images/04.png)
+
+### ***Slide 5***
+
+![](images/p5.png)
+
+### ***Slide 6***
+
+![](images/p6.png)
+
+## Column {data-width=550 style = "color:cream"}
+
+### ÚLTIMAS NOTICIAS
+
+![***La Gerenta General de la EPS Ilo S.A. Solange Agramonte Flores, firmó el acuerdo institucional entre la EPS Ilo S.A. y la Comunidad Campesina de Asana reafirmando el compromiso de seguir trabajando en conjunto para la realización de más proyectos de intervención de mejora del recurso hídrico.***](https://z-p3-scontent.flim3-2.fna.fbcdn.net/v/t39.30808-6/331523333_756094999063421_4044258642039923352_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=730e14&_nc_eui2=AeEemGHAK61UJXw6O2WUbwACvlxrBZ1imXa-XGsFnWKZdq6dVMrdphtDKgdqTH-32haIABsLjUmCn3OVCgBEg6mZ&_nc_ohc=hIajZ0oeXm8AX8NuTNI&_nc_zt=23&_nc_ht=z-p3-scontent.flim3-2.fna&oh=00_AfAWaMZQhrIuTpsWJHK3fTtLucPAnPo4zgrjvfJrOXAKlA&oe=6459C7D8)
+
+### 
+
+![Gracias por tu apoyo](images/recibo.png)\`
+
+## Column {data-width=110 style = "color:cream"}
+
+### Presentación MRSE
+
+```{r}
+embed_xaringan(url = "https://qgis-apuntes.netlify.app",ratio="4:3")
+```
+
+```{r eval=FALSE}
+ggplotly(p=g0,dynamicTicks = TRUE)
+```
+
+### UBICACIÓN DE LA MICROCUENCA ASANA
+
+```{r eval=FALSE}
+graf <- df %>% ggplot(aes(x=Fecha,y=Precipitacion))+
+  geom_line(color="deepskyblue")+
+  labs(x="Fecha",y="Precipitación (mm)") +
+  theme_minimal()
+ggplotly(graf, dynamicTicks = TRUE)
+```
 
 ```{r warning=FALSE, message=FALSE}
 im <- "https://www.epsilo.com.pe/uploads/Logos/nuevoLogoEpsilo2.png"
@@ -99,10 +152,12 @@ polig <- st_read("shp/microcuenca.shp")
 
 # Forma con imagen local
 pluv <- leaflet() %>% 
-  addTiles() %>% leafem::addLogo(im,src ="remote",
+  addTiles() %>% 
+  addProviderTiles(providers$Esri.WorldImagery) %>% 
+  leafem::addLogo(im,src ="remote",
                                  url="https://www.epsilo.com.pe/",
                          position = "bottomright", width = 160,
-                         height = 60) %>% 
+                         height = 40) %>% 
   addMarkers(lat=-17.062286,lng=-70.520806,
              popup = paste(sep="<br>","<b>Lugar:</b>","Estación pluviométrica","<b>Latitud:</b>","-17.062286","<b>Longitud:</b>"
                            ,"-70.520806","<b>Imagen:</b>",img_01)) %>% 
@@ -114,37 +169,27 @@ pluv <- leaflet() %>%
                            "-71.19908","<b>Imagen:</b>",img_02)) %>% 
   addPolygons(data=st_transform(polig,crs = 4326),
               label = "Microcuenca Asana",
-                popup = "Comunidad de Asana")
+                popup = "Comunidad de Asana") %>% 
+  setView(zoom = 10, lat = -17.062286,lng=-70.520806)
   
 
 pluv
 ```
 
-
-Column {data-width=350}
------------------------------------------------------------------------
-Estos gráficos son interactivos y permiten muchas funciones especiales como hacer **zoom, pan(desplazamiento en el lienzo), descargar como png, entre otras funcionalidades.**
-
-### DISTRIBUCIÓN DE LOS DATOS
-
-```{r}
-ggplotly(p=g0,dynamicTicks = TRUE)
-```
-
-### GRÁFICO DE PRECIPITACIÓN VS TIEMPO
-
-```{r}
-graf <- df %>% ggplot(aes(x=Fecha,y=Precipitacion))+
-  geom_line(color="deepskyblue")+
-  labs(x="Fecha",y="Precipitación (mm)") +
-  theme_minimal()
-ggplotly(graf, dynamicTicks = TRUE)
-```
-
 # Información procesada {data-icon="fa-chart-pie"}
-Column {data-width=700}
------------------------------------------------------------------------
+
+## Column {data-width="100"}
+
+
+>***Datos de Monitoreo Hidrológico en la Microcuenca de Asana***
+>Como parte de la ejecución del Plan de Mecanismos de Retribución por Servicios Ecosistémicos Hídricos de la EPS Ilo S.A. se cuenta con un Sistema de Monitoreo Hidrológico. Parte de este sistema se muestra en esta página. Aquí puedes visualizar y descargar los datos que se vienen recolectando constantemente.
+>
+> ---***Equipo MRSE***
+
+## Column {data-width="400"}
+
 ### Gráficos de barras
+
 ```{r}
 df$date2 <- format(df$Fecha,format="%Y-%m")
 df$date3 <- format(df$Fecha,format("%Y-%m-%d"))
@@ -175,29 +220,37 @@ a1 <- m %>% ggplot(aes(x=Mes,y=Precipitacion))+
 ggplotly(a1)
 ```
 
-Column {data-width=200}
------------------------------------------------------------------------
+## Column {data-width="50"}
+
 ### Precipitación acumulada total
+
 ```{r}
 valueBox(paste0(sum(df$Precipitacion, na.rm=T), " milímetros"), icon = "fa-pencil")
 ```
+
 ### Inicio de mediciones
+
 ```{r}
 valueBox(min(df$Fecha), icon = "fa-pencil")
 ```
+
 ### Última dato descargado de la estación
+
 ```{r}
 valueBox(max(df$Fecha), icon = "fa-pencil")
 ```
 
 ### Cantidad de meses colectadoss
+
 ```{r}
 gauge(paste0(3, "meses"), min = 0, max = 12, 
       gaugeSectors(
   danger = c(0, 2), warning = c(3, 6), success = c(7, 10)
 ))
 ```
+
 ### Gráfico de tipo calendario
+
 ```{r}
 df1 <- df
 df1 <- df1[,1:2]
@@ -207,18 +260,22 @@ calendarPlot(df1, pollutant = "pp",
              cols = "Blues",)
 ```
 
-# En desarrollo {data-icon="fa-chart-bar"}
+# Descarga de datos {data-icon="fa-chart-bar"}
 
-row {data-width=300}
------------------------------------------------------------------------
-### Presentación MRSE
+## row {data-width="110" style="color:cream"}
+
+### Descarga de datos de lluvia
+
+La siguiente tabla se obtuvo luego de desacargar datos de precipitación de la Estación meteorológica Asana. El formato de la fecha de cada dato de precipitación se muestra en Año-Mes-Día Hora:Minuto. Además la tabla se puede descargar en varios formatos (revisar los botones de la tabla 1).
+
 ```{r}
-embed_xaringan(url = "https://rstudio-pubs-static.s3.amazonaws.com/1038198_cc1b96ffb74446c5a9171b32fa92d943.html#/title-slide",ratio="2:4")
+datos
 ```
 
-row {data-width=300}
------------------------------------------------------------------------
+## row {data-width="300" style="color:cream"}
+
 ### Gráfico de serie de tiempo
+
 ```{r}
 dfn <- df
 names(dfn) <- c("date","pp")
@@ -227,8 +284,7 @@ library(openair)
 
 timeVariation(dfn, pollutant = "pp", 
               statistic = "mean",
-              col = "firebrick",
+              col = "turquoise",
               main="Comportamiento de lluvias en Estación Asana")
 
 ```
-
