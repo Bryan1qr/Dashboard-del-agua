@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Reloj aorístico de accidentes por día y hora del día</title>
+<style>
+body {
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.chart {
+	float: left
+	display: table-cell;
+}
+.chart path {
+	stroke: #777;
+	stroke-width: 0.1px;
+}
+.chart .labels {
+	fill: #aaa;
+	letter-spacing: -1px;
+}
+.chart .labels.segment {
+	font-size: 10px;
+}
+.legendContainer {
+	margin-left: 20px;
+	padding-left: 20px;
+	display: table-cell;
+	vertical-align: middle;
+}
+.legendTitle {
+    font-weight: bold;
+	padding-bottom: 5px;
+}
+.legend svg {
+	padding: 6px;
+    font-size: 12px;
+}
+
+.legendContainer {
+	height: 290;
+}
+.legend svg {
+	width: 30px;
+	height: 200px;
+}
+#chart svg {
+	height: 290px;
+	width: 290px;
+}
+
+</style>
+
+</head>
+<body>
+<h2>Reloj aorístico de accidentes por día y hora del día</h2>
+<div style="display: table;">
+<div class="chart" id="chart"></div>
+<div class="legendContainer" id="legendContainer">
+<div class="legendTitle" id="legendTitle"></div>
+<div class="legend" id="legend"></div>
+</div>
+</div>
+<div class="info" id="info"></div>
+<script src="d3.min.js" type="text/JavaScript"></script>
+<script src="circularHeatChart.js" type="text/JavaScript"></script>
+<script>
+var segHeight=5;
+var segCnt=7;
+var bandCnt=24;
+var segLabels=["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+var bandLabels=["Midnight", "1am", "2am", "3am", "4am", "5am", "6am", "7am", "8am", "9am", "10am", "11am", "Noon", "1pm", "2pm", "3pm", "4pm", "5pm", "6pm", "7pm", "8pm", "9pm", "10pm", "11pm"];
+var innerRadius=15;
+var edata=[28,24,17,27,29,36,38,17,20,14,23,20,39,28,10,17,10,16,19,37,19,10,16,10,9,16,34,29,15,14,11,7,15,39,27,12,17,13,13,21,38,33,30,32,24,30,23,36,31,112,109,112,90,84,67,53,132,123,146,145,145,87,71,89,87,86,98,97,74,59,89,97,79,87,90,77,55,87,89,79,87,95,105,58,109,85,95,101,113,93,79,90,91,97,111,119,102,87,100,79,89,81,99,98,76,77,105,101,90,97,89,84,98,105,100,103,100,95,88,117,106,102,116,128,92,95,134,130,129,113,128,119,99,119,107,114,115,117,115,78,77,95,86,88,100,75,73,61,58,67,66,69,78,62,55,53,62,47,75,56,74,25,32,30,34,43,58,41];
+var startColor="#ffffff";
+var endColor="#f2230c";
+var noDataColor="#f0f0f0";
+var chart = circularHeatChart()
+	.range([startColor,endColor])
+	.nullColor(noDataColor)
+	.segmentHeight(segHeight)
+	.innerRadius(innerRadius)
+	.numSegments(segCnt)
+	.segmentLabels(segLabels)
+	.radialLabels(bandLabels)
+	.legDivId("legend")
+	.legendSettings({width: 30, height: 200, legBlockWidth: 20})
+	.data(edata)
+;
+d3.select('#chart')
+	.selectAll('svg')
+	.data([edata])
+	.enter()
+	.append('svg')
+	.call(chart);
+d3.selectAll("#chart path").on('mouseover', function() {
+	var d = d3.select(this).data();
+	d3.select("#info").text('Cantidad de incidentes: ' + d);
+});
+d3.select("#legendTitle").html("Leyenda");
+
+</script>
+</body>
+</html>
+

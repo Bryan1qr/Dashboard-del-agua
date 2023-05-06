@@ -121,7 +121,7 @@ datos <- datatable(df, extensions = 'Buttons',
 ### Presentación MRSE
 
 ```{r}
-embed_xaringan(url = "https://qgis-apuntes.netlify.app",ratio="4:3")
+embed_xaringan(url = "presentacion/qgis.html")
 ```
 
 ```{r eval=FALSE}

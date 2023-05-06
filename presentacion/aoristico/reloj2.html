@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Reloj aorístico de accidentes en Santiago por mes</title>
+<style>
+body {
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.chart {
+	float: left
+	display: table-cell;
+}
+.chart path {
+	stroke: #777;
+	stroke-width: 0.1px;
+}
+.chart .labels {
+	fill: #aaa;
+	letter-spacing: -1px;
+}
+.chart .labels.segment {
+	font-size: 10px;
+}
+.legendContainer {
+	margin-left: 20px;
+	padding-left: 20px;
+	display: table-cell;
+	vertical-align: middle;
+}
+.legendTitle {
+    font-weight: bold;
+	padding-bottom: 5px;
+}
+.legend svg {
+	padding: 6px;
+    font-size: 12px;
+}
+
+.legendContainer {
+	height: 316;
+}
+.legend svg {
+	width: 200px;
+	height: 300px;
+}
+#chart svg {
+	height: 316px;
+	width: 316px;
+}
+
+</style>
+
+</head>
+<body>
+<h2>Reloj aorístico de accidentes en Santiago por mes</h2>
+<div style="display: table;">
+<div class="chart" id="chart"></div>
+<div class="legendContainer" id="legendContainer">
+<div class="legendTitle" id="legendTitle"></div>
+<div class="legend" id="legend"></div>
+</div>
+</div>
+<div class="info" id="info"></div>
+<script src="d3.min.js" type="text/JavaScript"></script>
+<script src="circularHeatChart.js" type="text/JavaScript"></script>
+<script>
+var segHeight=16;
+var segCnt=12;
+var bandCnt=7;
+var segLabels=["January","February","March","April","May","June","July","August","September","October","November","December"];
+var bandLabels=["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+var innerRadius=25;
+var edata=[129,138,153,125,114,140,129,123,137,158,166,181,144,132,158,143,171,137,131,104,127,176,128,140,150,97,131,139,177,155,108,149,129,165,149,124,103,113,152,151,170,149,135,139,135,138,179,133,113,144,183,177,161,196,122,179,133,138,154,142,141,120,168,133,151,169,115,147,163,98,134,200,64,132,158,140,105,121,92,139,124,114,107,141];
+var startColor="#ffffff";
+var endColor="#f7e817";
+var noDataColor="#f0f0f0";
+var chart = circularHeatChart()
+	.range([startColor,endColor])
+	.nullColor(noDataColor)
+	.segmentHeight(segHeight)
+	.innerRadius(innerRadius)
+	.numSegments(segCnt)
+	.segmentLabels(segLabels)
+	.radialLabels(bandLabels)
+	.legDivId("legend")
+	.legendSettings({width: 200, height: 300, legBlockWidth: 30})
+	.data(edata)
+;
+d3.select('#chart')
+	.selectAll('svg')
+	.data([edata])
+	.enter()
+	.append('svg')
+	.call(chart);
+d3.selectAll("#chart path").on('mouseover', function() {
+	var d = d3.select(this).data();
+	d3.select("#info").text('Incident count: ' + d);
+});
+d3.select("#legendTitle").html("Legend");
+
+</script>
+</body>
+</html>
+
