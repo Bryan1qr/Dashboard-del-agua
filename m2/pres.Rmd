@@ -1,0 +1,62 @@
+---
+subtitle: "<b>Principales avances</b>"
+title: "<font color='white'><b>Mecanismos de Retribución por<br>Servicios Ecosistémicos</b>"
+author: "<font color='white'>Lizeth Condori Diaz<br>Bryan Quispe Ramos"
+institute: "EPS Ilo S.A"
+date: "<b>`r Sys.Date()`</b>"
+output:
+  xaringan::moon_reader:
+    css: xaringan-themer.css
+    self_contained: true
+    lib_dir: libs
+    seal: false
+    nature:
+      highlightLines: true
+---
+
+```{r setup, include=FALSE}
+pacman::p_load("xaringanExtra","xaringanthemer")
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(
+  cache = FALSE,
+  message = FALSE, 
+  warning = FALSE,
+  eval = FALSE)
+style_mono_light(base_color = "#344c25")
+```
+class: title-slide, center middle
+background-image: url(https://i0.wp.com/www.sunass.gob.pe/wp-content/uploads/2022/04/WhatsApp-Image-2022-04-07-at-9.03.43-PM.jpeg?resize=1536%2C988&ssl=1)
+background-size: cover
+```{r title-slides, echo=FALSE, eval=TRUE}
+htmltools::withTags(
+  div(
+    class = "talk-meta",
+    div(
+      class = "talk-title",
+      h1(rmarkdown::metadata$title),
+      p(rmarkdown::metadata$subtitle)
+    ),
+    div(
+      class = "talk-author",
+      paste(rmarkdown::metadata$author, collapse = " <br> "),
+      br(),
+      span(paste(rmarkdown::metadata$institute, collapse = ", "))
+    ),
+    div(
+      class = "talk-date",
+      knitr::knit(text = rmarkdown::metadata$date, quiet = TRUE)
+    )
+  )
+)
+```
+
+---
+## Problemática
+
+La pérdida de bofedales, cobertura ribereña y ecosistemas de alta montaña aledaños a los embalses de agua, ocasionan menor almacenamiento y regulación hídrica.
+
+Prácticas como el sobrepastoreo deteriora los ecosistemas reguladores, cambio climático y actividades agrícolas ocasionan disminución de los volúmenes de agua en las cuencas.
+
+## Regulación hídrica
+
+El ecosistema almacena agua en los periodos lluviosos y se libera lentamente en los periodos secos o de estiaje, proporcionando un balance natural entre caudales en época lluviosa con caudales de época seca. A mayor capacidad de regulación, mayores serán los caudales de regulación.

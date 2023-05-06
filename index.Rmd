@@ -121,7 +121,7 @@ datos <- datatable(df, extensions = 'Buttons',
 ### Presentación MRSE
 
 ```{r}
-embed_xaringan(url = "presentacion/qgis.html")
+embed_xaringan("m2/pres.html",ratio="4:3")
 ```
 
 ```{r eval=FALSE}
@@ -140,10 +140,7 @@ ggplotly(graf, dynamicTicks = TRUE)
 
 ```{r warning=FALSE, message=FALSE}
 im <- "https://www.epsilo.com.pe/uploads/Logos/nuevoLogoEpsilo2.png"
-# foto de estación
-img_01 <- paste0("<center><img src='https://raw.githubusercontent.com/Bryan1qr/ggplot2_graphics/main/Estaci%C3%B3n.jpeg' width=150 height=200></center>")
 
-img_02 <- paste0("<center><img src='https://imgs.search.brave.com/_urNEC00koyHwzUtjZQGAuh_Zqu16E7u5xr2vheNB1M/rs:fit:474:355:1/g:ce/aHR0cHM6Ly9wcmVu/c2FyZWdpb25hbC5w/ZS93cC1jb250ZW50/L3VwbG9hZHMvMjAx/OC8wNy9FcHMtSWxv/LTAyLmpwZw' width=150 height=200></center>")
 
 inf <- data.frame(este=c(266582, 254797), norte=c(8057162,8049438)) %>% 
   st_as_sf(coords=c("este","norte"), crs=32719)
@@ -151,8 +148,9 @@ inf <- data.frame(este=c(266582, 254797), norte=c(8057162,8049438)) %>%
 inf2 <- st_transform(inf,crs = 4326) %>% as.data.frame()
 
 #im <- "https://www.epsilo.com.pe/uploads/Logos/nuevoLogoEpsilo2.png"
-polig <- st_read("shp/microcuenca.shp")
-
+polig <- read.csv("microcuenca.csv") %>% st_as_sf(coords = c("x","y"),crs=32719) %>% 
+  summarise(geometry=st_combine(geometry)) %>% 
+  st_cast("POLYGON")
 
 # Forma con imagen local
 pluv <- leaflet() %>% 
@@ -160,23 +158,15 @@ pluv <- leaflet() %>%
   addProviderTiles(providers$Esri.WorldImagery) %>% 
   leafem::addLogo(im,src ="remote",
                                  url="https://www.epsilo.com.pe/",
-                         position = "bottomright", width = 160,
-                         height = 40) %>% 
-  addMarkers(lat=-17.062286,lng=-70.520806,
-             popup = paste(sep="<br>","<b>Lugar:</b>","Estación pluviométrica","<b>Latitud:</b>","-17.062286","<b>Longitud:</b>"
-                           ,"-70.520806","<b>Imagen:</b>",img_01)) %>% 
-  addCircleMarkers(lat=c(-17.062286,-17.630402),
-                   lng=c(-70.520806,-71.335089), radius = 40,
-                   color="deepskyblue") %>% 
-  addMarkers(lat=-17.630402,lng=-71.335089,
-             popup = paste(sep="<br>","<b>Lugar:</b>","EPS ILO S.A.","<b>Latitud:</b>","-17.630402","<b>Longitud:</b>",
-                           "-71.19908","<b>Imagen:</b>",img_02)) %>% 
+                         position = "topright", width = 80,
+                         height = 20) %>% 
+  addMarkers(lat=-17.062286,lng=-70.520806) %>%  
+  addMarkers(lat=-17.630402,lng=-71.335089) %>% 
   addPolygons(data=st_transform(polig,crs = 4326),
               label = "Microcuenca Asana",
                 popup = "Comunidad de Asana") %>% 
   setView(zoom = 10, lat = -17.062286,lng=-70.520806)
   
-
 pluv
 ```
 
@@ -270,29 +260,40 @@ calendarPlot(df1, pollutant = "pp",
 
 # Descarga de datos {data-icon="fa-chart-bar"}
 
-## row {data-width="110" style="color:cream"}
+## column {data-width="190" style="color:cream"}
 
 ### Descarga de datos de lluvia
 
 La siguiente tabla se obtuvo luego de desacargar datos de precipitación de la Estación meteorológica Asana. El formato de la fecha de cada dato de precipitación se muestra en Año-Mes-Día Hora:Minuto. Además la tabla se puede descargar en varios formatos (revisar los botones de la tabla 1).
 
+
 ```{r}
+
 datos
 ```
 
 ## row {data-width="300" style="color:cream"}
-
-### Gráfico de serie de tiempo
-
-```{r}
+### Precipitación media semanal
+```{r include=FALSE}
 dfn <- df
 names(dfn) <- c("date","pp")
 view(dfn)
 library(openair)
 
-timeVariation(dfn, pollutant = "pp", 
+myOutput <- timeVariation(dfn, pollutant = "pp", 
               statistic = "mean",
               col = "turquoise",
               main="Comportamiento de lluvias en Estación Asana")
-
 ```
+
+
+```{r}
+plot(myOutput,subset = "day.hour")
+```
+
+## row {data-width="300" style="color:cream"}
+### Precipitación media horaria
+```{r}
+plot(myOutput,subset = "hour")
+```
+
