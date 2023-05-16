@@ -54,7 +54,9 @@ theme_set(theme_bw())
 ## Column {.tabset data-width="550"}
 
 ```{r}
-df <- read.csv("abril.csv")[,-1]
+df <- read.csv("mayo.csv")[,-1]
+df$Fecha <- paste0(df$fecha," ",df$hora)
+df <- df[,c(4,3)]
 df$Fecha <- as.POSIXct(df$Fecha,format="%Y-%m-%d %H:%M")
 
 g0 <- df %>% ggplot(aes(x=factor(Precipitacion)))+
@@ -110,9 +112,9 @@ datos <- datatable(df, extensions = 'Buttons',
 
 ### ÚLTIMAS NOTICIAS
 
-![***La Gerenta General de la EPS Ilo S.A. Solange Agramonte Flores, firmó el acuerdo institucional entre la EPS Ilo S.A. y la Comunidad Campesina de Asana reafirmando el compromiso de seguir trabajando en conjunto para la realización de más proyectos de intervención de mejora del recurso hídrico.***](https://z-p3-scontent.flim3-2.fna.fbcdn.net/v/t39.30808-6/331523333_756094999063421_4044258642039923352_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=730e14&_nc_eui2=AeEemGHAK61UJXw6O2WUbwACvlxrBZ1imXa-XGsFnWKZdq6dVMrdphtDKgdqTH-32haIABsLjUmCn3OVCgBEg6mZ&_nc_ohc=hIajZ0oeXm8AX8NuTNI&_nc_zt=23&_nc_ht=z-p3-scontent.flim3-2.fna&oh=00_AfAWaMZQhrIuTpsWJHK3fTtLucPAnPo4zgrjvfJrOXAKlA&oe=6459C7D8)
+![***La Gerenta General de la EPS Ilo S.A. Solange Agramonte Flores, firmó el acuerdo institucional entre la EPS Ilo S.A. y la Comunidad Campesina de Asana reafirmando el compromiso de seguir trabajando en conjunto para la realización de más proyectos de intervención de mejora del recurso hídrico.***](images/firma.jpg)
 
-### 
+### ***Recuerda...***
 
 ![Gracias por tu apoyo](images/recibo.png)\`
 
@@ -193,13 +195,13 @@ df$date2 <- format(df$Fecha,format="%Y-%m")
 df$date3 <- format(df$Fecha,format("%Y-%m-%d"))
 df$date4 <- format(df$Fecha,format = "%d")
 
-m <- aggregate(data=df,Precipitacion~date3, FUN = sum)
-m2 <- m %>% ggplot(aes(x=date3,y=Precipitacion))+
+m <- aggregate(data=df,Precipitacion~date3+date2+date4, FUN = sum)
+m2 <- m %>% ggplot(aes(x=date4,y=Precipitacion))+
   geom_bar(stat="identity",fill="turquoise")+
   labs(title="Precipitacion diaria acumulada",
         x="Fecha",y="Precipitación (mm)") + theme(axis.title = element_text(size = 7),
     axis.text.x = element_text(size = 7,
-        angle = 90))
+        angle = 90)) + facet_wrap(~date2,ncol=2)
 
 ggplotly(p=m2)
 ```
@@ -209,7 +211,7 @@ ggplotly(p=m2)
 ```{r}
 m$dateu <- as.Date(m$date3,format = "%Y-%m-%d")
 m$datex <- format(m$dateu,format="%m")
-m <- m[,c(4,2)]
+m <- m[,c(6,4)]
 names(m) <- c("Mes","Precipitacion")
 
 a1 <- m %>% ggplot(aes(x=Mes,y=Precipitacion))+
@@ -238,10 +240,9 @@ valueBox(min(df$Fecha), icon = "fa-pencil")
 valueBox(max(df$Fecha), icon = "fa-pencil")
 ```
 
+```{r eval=FALSE}
 ### Cantidad de meses colectadoss
-
-```{r}
-gauge(paste0(3, "meses"), min = 0, max = 12, 
+gauge(paste0(4, "meses"), min = 0, max = 12, 
       gaugeSectors(
   danger = c(0, 2), warning = c(3, 6), success = c(7, 10)
 ))
@@ -272,9 +273,8 @@ La siguiente tabla se obtuvo luego de desacargar datos de precipitación de la E
 datos
 ```
 
-## row {data-width="300" style="color:cream"}
-### Precipitación media semanal
 ```{r include=FALSE}
+### Precipitación (frecuencia semanal)
 dfn <- df
 names(dfn) <- c("date","pp")
 view(dfn)
@@ -287,12 +287,12 @@ myOutput <- timeVariation(dfn, pollutant = "pp",
 ```
 
 
-```{r}
+```{r eval=FALSE}
 plot(myOutput,subset = "day.hour")
 ```
 
 ## row {data-width="300" style="color:cream"}
-### Precipitación media horaria
+### Frecuencia de precipitación horaria
 ```{r}
 plot(myOutput,subset = "hour")
 ```
